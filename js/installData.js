@@ -142,11 +142,11 @@ function format(fmt, date) {
 		"q+": Math.floor((date.getMonth() + 3) / 3), //季度
 		"S": date.getMilliseconds() //毫秒
 	};
-	if(/(y+)/.test(fmt)) {
+	if (/(y+)/.test(fmt)) {
 		fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
 	}
-	for(var k in o) {
-		if(new RegExp("(" + k + ")").test(fmt)) {
+	for (var k in o) {
+		if (new RegExp("(" + k + ")").test(fmt)) {
 			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 		}
 	}
@@ -167,18 +167,18 @@ function format(fmt, date) {
 function installData(one, two, step, flag, period1, delay1, period2, delay2) {
 
 	//此地为何判断--因echarts有一个bug,轨迹会出现错乱，将数据放在不同series中，切换执行则会避开
-	if(flag === 2) {
-		if(one === null) {
+	if (flag === 2) {
+		if (one === null) {
 			optionPush([], [], two, [], period1, delay1, period2, delay2);
-		} else if(two === null) {
+		} else if (two === null) {
 			optionPush(one, [], [], [], period1, delay1, period2, delay2);
 		} else {
 			optionPush(one, [], two, [], period1, delay1, period2, delay2);
 		}
 	} else {
-		if(one === null) {
+		if (one === null) {
 			optionPush([], [], [], two, period1, delay1, period2, delay2);
-		} else if(two === null) {
+		} else if (two === null) {
 			optionPush([], one, [], [], period1, delay1, period2, delay2);
 		} else {
 			optionPush([], one, [], two, period1, delay1, period2, delay2);
@@ -242,57 +242,57 @@ function logic(data) {
 	var z = 1;
 	//目标与伴随间隔一分钟之内为同时出发
 	var interval = 60000;
-	for(var i = 0, len = data.length; i < len; i++) {
+	for (var i = 0, len = data.length; i < len; i++) {
 
-		if(data[i + 1] != undefined) {
+		if (data[i + 1] != undefined) {
 
 			//首先前为目标后为伴随时或者前为伴随后为目标才进行执行时间比对逻辑
-			if(data[i][3] === 1 && data[i + 1][3] === 2) {
+			if (data[i][3] === 1 && data[i + 1][3] === 2) {
 				var d1 = new Date(data[i][2]); //目标出发时间
 				var d2 = new Date(data[i + 1][2]); //伴随出发时间
 				var d3 = new Date(data[i][4]); //目标到达时间
 				var d4 = new Date(data[i + 1][4]); //伴随到达时间
 
 				//查看是否在时间间隔内
-				if(d1 - d2 <= interval && d1 - d2 >= -interval) {
+				if (d1 - d2 <= interval && d1 - d2 >= -interval) {
 					installData(data[i][0], data[i + 1][0], data[i + 1][4], z++, 4, 0, 4, 0);
 					i++;
-				} else if(d3 > d2 && !(d2 - d3 <= interval && d2 - d3 >= -interval)) {
+				} else if (d3 > d2 && !(d2 - d3 <= interval && d2 - d3 >= -interval)) {
 					installData(data[i][0], data[i + 1][0], data[i + 1][4], z++, 4, 0, 2, 2000);
 					i++;
 				} else {
 					installData(data[i][0], null, data[i][4], z++, 4, 0, 4, 0);
 				}
-			} else if(data[i][3] === 2 && data[i + 1][3] === 1) {
+			} else if (data[i][3] === 2 && data[i + 1][3] === 1) {
 				var d1 = new Date(data[i][2]);
 				var d2 = new Date(data[i + 1][2]);
 				var d3 = new Date(data[i][4]);
 				var d4 = new Date(data[i + 1][4]);
-				if(d1 - d2 <= interval && d1 - d2 >= -interval) {
+				if (d1 - d2 <= interval && d1 - d2 >= -interval) {
 					installData(data[i + 1][0], data[i][0], data[i][4], z++, 4, 0, 4, 0);
 					i++;
-				} else if(d3 > d2 && !(d2 - d3 <= interval && d2 - d3 >= -interval)) {
+				} else if (d3 > d2 && !(d2 - d3 <= interval && d2 - d3 >= -interval)) {
 					installData(data[i + 1][0], data[i][0], data[i][4], z++, 2, 2000, 4, 0);
 					i++;
 				} else {
 					installData(null, data[i][0], data[i][4], z++, 4, 0, 4, 0);
 				}
 			} else {
-				if(data[i][3] === 1) {
+				if (data[i][3] === 1) {
 					installData(data[i][0], null, data[i][4], z++, 4, 0, 4, 0);
 				} else {
 					installData(null, data[i][0], data[i][4], z++, 4, 0, 4, 0);
 				}
 			}
 		} else {
-			if(data[i][3] === 1) {
+			if (data[i][3] === 1) {
 				installData(data[i][0], null, data[i][4], z++, 4, 0, 4, 0);
 			} else {
 				installData(null, data[i][0], data[i][4], z++, 4, 0, 4, 0);
 			}
 		}
 
-		if(z >= 3) z = 1;
+		if (z >= 3) z = 1;
 	}
 }
 
@@ -322,7 +322,7 @@ async function forData() {
 		var res = [];
 		var fromCoord = geoCoordMap[data[0].name];
 		var toCoord = geoCoordMap[data[1].name];
-		if(fromCoord && toCoord) {
+		if (fromCoord && toCoord) {
 			res.push({
 				fromName: data[0].name,
 				toName: data[1].name,
@@ -341,17 +341,17 @@ async function forData() {
 	}
 
 	//循环目标与伴随的数据
-	for(var i = 0; i < targetNum; i++) {
+	for (var i = 0; i < targetNum; i++) {
 		targetLines.push(sumData(targetData[i])[0][0]);
 		addData.push(sumData(targetData[i]));
 	}
-	for(var i = 0; i < accompanyNum; i++) {
+	for (var i = 0; i < accompanyNum; i++) {
 		accompanyLines.push(sumData(accompanyData[i])[0][0]);
 		addData.push(sumData(accompanyData[i]));
 	}
 
 	//循环得到坐标圆点
-	for(var key in geoCoordMap) {
+	for (var key in geoCoordMap) {
 		circleData.push({
 			name: key,
 			value: geoCoordMap[key]
@@ -583,7 +583,7 @@ async function forData() {
 async function drawMap() {
 
 	//初始化echart--此处判断为避免多次初始化造成内存泄露
-	if(myChart == null || myChart == undefined) {
+	if (myChart == null || myChart == undefined) {
 		myChart = echarts.init(document.getElementById('allmap'));
 	}
 
@@ -597,7 +597,7 @@ async function drawMap() {
 
 	//避免时间轴拖动地图跟随移动
 	myChart.getZr().on('mousedown', function(event) {
-		if(event.target != undefined && event.topTarget.name != "line") {
+		if (event.target != undefined && event.topTarget.name != "line") {
 			map.disableDragging();
 		}
 	})
